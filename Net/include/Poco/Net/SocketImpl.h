@@ -29,6 +29,7 @@
 namespace Poco {
 namespace Net {
 
+class FileInputStream;
 
 class Net_API SocketImpl: public Poco::RefCountedObject
 	/// This class encapsulates the Berkeley sockets API.
@@ -519,6 +520,11 @@ protected:
 
 	static void error(int code, const std::string& arg);
 		/// Throws an appropriate exception for the given error code.
+
+	int sendFile(FileInputStream &FileInputStream, Poco::UInt64 offset = 0);
+		/// Sends file with system function
+		/// for posix systems - with sendfile64(...)
+		/// for windows - with TransmitFile(...)
 
 private:
 	SocketImpl(const SocketImpl&);

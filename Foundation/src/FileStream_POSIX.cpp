@@ -166,5 +166,9 @@ std::streampos FileStreamBuf::seekpos(std::streampos pos, std::ios::openmode mod
 	return _pos;
 }
 
+FileStreamBuf::NativeHandle FileStreamBuf::nativeHandle() const
+{
+	return _fd;
+}
 
 } // namespace Poco

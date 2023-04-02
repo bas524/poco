@@ -103,5 +103,9 @@
         "**/obj": true
 	},
 	"git.ignoreLimitWarning": true,
-	"cmake.configureOnOpen": false
+	"cmake.configureOnOpen": false,
+	"cmake.buildDirectory": "${workspaceFolder}/cmake-vs-build",
+	"cmake.configureArgs": [
+		"-DENABLE_TESTS=ON"
+	]
 }

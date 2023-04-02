@@ -17,6 +17,7 @@
 #include "Poco/Net/StreamSocketImpl.h"
 #include "Poco/NumberFormatter.h"
 #include "Poco/Timestamp.h"
+#include "Poco/FileStream.h"
 #include <string.h> // FD_SET needs memset on some platforms, so we can't use <cstring>
 
 
@@ -42,8 +43,20 @@
 
 #ifdef POCO_OS_FAMILY_WINDOWS
 #include <windows.h>
+#else
+#include <csignal>
 #endif
 
+
+#if POCO_OS == POCO_OS_MAC_OS_X || POCO_OS == POCO_OS_FAMILY_BSD
+#include <sys/uio.h>
+#include <sys/types.h>
+using sighandler_t = sig_t;
+#endif
+
+#if POCO_OS == POCO_OS_LINUX
+#include <sys/sendfile.h>
+#endif
 
 #if defined(_MSC_VER)
 #pragma warning(disable:4996) // deprecation warnings
@@ -1341,6 +1354,54 @@ void SocketImpl::error(int code, const std::string& arg)
 	default:
 		throw IOException(NumberFormatter::format(code), arg, code);
 	}
+}
+
+int _sendfile(poco_socket_t sd, FileIOS::NativeHandle fd, Poco::UInt64 offset,std::streamoff sentSize)
+{
+	off_t sent = 0;
+#ifdef __USE_LARGEFILE64
+	sent = sendfile64(sd, fd, &offset, sentSize);
+#else
+#if POCO_OS == POCO_OS_LINUX
+	sent = sendfile(sd, fd, &offset, sentSize);
+#elif POCO_OS == POCO_OS_MAC_OS_X
+	int result = sendfile(fd, sd, offset, &sentSize, nullptr, 0);
+	if (result < 0)
+	{
+		sent = -1;
+	} 
+	else 
+	{
+		sent = sentSize;
+	}
+#endif
+#endif
+	if (errno == EAGAIN || errno == EWOULDBLOCK) 
+	{
+		sent = 0;
+	}
+	return sent;
+}
+
+int SocketImpl::sendFile(FileInputStream &fileInputStream, Poco::UInt64 offset)
+{
+	FileIOS::NativeHandle fd = fileInputStream.nativeHandle();
+	fileInputStream.seekg(0, std::ios::beg);
+	Poco::UInt64 fbegin = fileInputStream.tellg();
+	fileInputStream.seekg(0, std::ios::end);
+	Poco::UInt64 fend = fileInputStream.tellg();
+	fileInputStream.seekg(0, std::ios::beg);
+
+	Poco::UInt64 fileSize = fend - fbegin;
+	std::streamoff sentSize = fileSize - offset;
+	off_t sent = 0;
+	sighandler_t sigPrev = signal(SIGPIPE, SIG_IGN);
+	while (sent == 0) {
+		errno = 0;
+		sent = _sendfile(_sockfd, fd, offset, sentSize);
+	}
+	signal(SIGPIPE, sigPrev != SIG_ERR ? sigPrev : SIG_DFL);
+	return sent;
 }
 
 

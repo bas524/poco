@@ -57,6 +57,10 @@ FileStreamBuf* FileIOS::rdbuf()
 	return &_buf;
 }
 
+FileIOS::NativeHandle FileIOS::nativeHandle() const
+{
+	return _buf.nativeHandle();
+}
 
 FileInputStream::FileInputStream():
 	FileIOS(std::ios::in),

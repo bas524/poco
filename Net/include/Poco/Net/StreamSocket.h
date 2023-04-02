@@ -28,6 +28,7 @@ namespace Net {
 
 
 class StreamSocketImpl;
+class FileInputStream;
 
 
 class Net_API StreamSocket: public Socket
@@ -252,6 +253,11 @@ public:
 		///
 		/// The preferred way for a socket to receive urgent data
 		/// is by enabling the SO_OOBINLINE option.
+
+	int sendFile(FileInputStream &FileInputStream);
+		/// Sends file with system function
+		/// for posix systems - with sendfile64(...)
+		/// for windows - with TransmitFile(...)
 
 	StreamSocket(SocketImpl* pImpl);
 		/// Creates the Socket and attaches the given SocketImpl.
