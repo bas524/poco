@@ -1360,10 +1360,10 @@ int _sendfile(poco_socket_t sd, FileIOS::NativeHandle fd, Poco::UInt64 offset,st
 {
 	off_t sent = 0;
 #ifdef __USE_LARGEFILE64
-	sent = sendfile64(sd, fd, &offset, sentSize);
+	sent = sendfile64(sd, fd, (off64_t *)&offset, sentSize);
 #else
 #if POCO_OS == POCO_OS_LINUX
-	sent = sendfile(sd, fd, &offset, sentSize);
+	sent = sendfile(sd, fd, (off_t *)&offset, sentSize);
 #elif POCO_OS == POCO_OS_MAC_OS_X
 	int result = sendfile(fd, sd, offset, &sentSize, nullptr, 0);
 	if (result < 0)
