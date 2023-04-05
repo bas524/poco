@@ -24,12 +24,11 @@
 
 
 namespace Poco {
+
+class FileInputStream;
 namespace Net {
 
-
 class StreamSocketImpl;
-class FileInputStream;
-
 
 class Net_API StreamSocket: public Socket
 	/// This class provides an interface to a

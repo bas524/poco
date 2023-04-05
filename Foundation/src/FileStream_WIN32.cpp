@@ -203,4 +203,11 @@ FileStreamBuf::NativeHandle FileStreamBuf::nativeHandle() const
 	return _handle;
 }
 
+Poco::UInt64 FileStreamBuf::size() const
+{
+	LARGE_INTEGER result;
+	result.LowPart = ::GetFileSize(_handle, &result.HighPart);
+    return result.QuadPart;
+}
+
 } // namespace Poco

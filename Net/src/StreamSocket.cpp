@@ -215,7 +215,7 @@ void StreamSocket::sendUrgent(unsigned char data)
 
 int StreamSocket::sendFile(FileInputStream &fileInputStream)
 {
-	impl()->sendFile(fileInputStream);
+	return impl()->sendFile(fileInputStream);
 }
 
 } } // namespace Poco::Net

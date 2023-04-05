@@ -1386,13 +1386,7 @@ int _sendfile(poco_socket_t sd, FileIOS::NativeHandle fd, Poco::UInt64 offset,st
 int SocketImpl::sendFile(FileInputStream &fileInputStream, Poco::UInt64 offset)
 {
 	FileIOS::NativeHandle fd = fileInputStream.nativeHandle();
-	fileInputStream.seekg(0, std::ios::beg);
-	Poco::UInt64 fbegin = fileInputStream.tellg();
-	fileInputStream.seekg(0, std::ios::end);
-	Poco::UInt64 fend = fileInputStream.tellg();
-	fileInputStream.seekg(0, std::ios::beg);
-
-	Poco::UInt64 fileSize = fend - fbegin;
+	Poco::UInt64 fileSize = fileInputStream.size();
 	std::streamoff sentSize = fileSize - offset;
 	off_t sent = 0;
 	sighandler_t sigPrev = signal(SIGPIPE, SIG_IGN);
