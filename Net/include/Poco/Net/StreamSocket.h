@@ -253,7 +253,7 @@ public:
 		/// The preferred way for a socket to receive urgent data
 		/// is by enabling the SO_OOBINLINE option.
 
-	int sendFile(FileInputStream &FileInputStream);
+	Poco::Int64 sendFile(FileInputStream &FileInputStream, Poco::UInt64 offset = 0);
 		/// Sends file with system function
 		/// for posix systems - with sendfile64(...)
 		/// for windows - with TransmitFile(...)

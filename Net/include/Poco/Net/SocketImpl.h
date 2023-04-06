@@ -466,7 +466,7 @@ public:
 	bool initialized() const;
 		/// Returns true iff the underlying socket is initialized.
 
-	int sendFile(FileInputStream &FileInputStream, Poco::UInt64 offset = 0);
+	Poco::Int64 sendFile(FileInputStream &FileInputStream, Poco::UInt64 offset = 0);
 		/// Sends file with system function
 		/// for posix systems - with sendfile64(...)
 		/// for windows - with TransmitFile(...)
