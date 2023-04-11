@@ -32,7 +32,7 @@ target_include_directories(Crypto
 
 if(MSVC AND POCO_DISABLE_INTERNAL_OPENSSL)
 	string(REGEX MATCH "POCO_EXTERNAL_OPENSSL" result ${CMAKE_CXX_FLAGS})
-	if(${result} MATCHES "POCO_EXTERNAL_OPENSSL"))
+	if(${result} MATCHES "POCO_EXTERNAL_OPENSSL")
 		message(STATUS "note: POCO_EXTERNAL_OPENSSL already defined")
 	else()
 		target_compile_definitions(Crypto PUBLIC POCO_EXTERNAL_OPENSSL)
