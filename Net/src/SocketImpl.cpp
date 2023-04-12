@@ -18,6 +18,7 @@
 #include "Poco/NumberFormatter.h"
 #include "Poco/Timestamp.h"
 #include "Poco/FileStream.h"
+#include "Poco/Error.h"
 #include <string.h> // FD_SET needs memset on some platforms, so we can't use <cstring>
 
 
