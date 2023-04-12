@@ -1365,15 +1365,26 @@ Poco::Int64 SocketImpl::sendFile(FileInputStream &fileInputStream, Poco::UInt64 
 	std::streamoff sentSize = fileSize - offset;
 	LARGE_INTEGER offsetHelper;
 	offsetHelper.QuadPart = offset;
-	OVERLAPPED overlapperd;
-	memset(&overlapperd, 0, sizeof(overlapperd));
-	overlapperd.Offset = offsetHelper.LowPart;
-	overlapperd.OffsetHigh =  offsetHelper.HighPart;
-	bool result = TransmitFile(_sockfd, fd, sentSize, 0, &overlapperd, nullptr, 0);
+	OVERLAPPED overlapped;
+	memset(&overlapped, 0, sizeof(overlapped));
+	overlapped.Offset = offsetHelper.LowPart;
+	overlapped.OffsetHigh =  offsetHelper.HighPart;
+	overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	if (overlapped.hEvent == nullptr)
+	{
+		return -1;
+	}
+	bool result = TransmitFile(_sockfd, fd, sentSize, 0, &overlapped, nullptr, 0);
 	if (!result)
 	{
-		error(WSAGetLastError(), "can't send file");
+		int err = WSAGetLastError();
+		if ((err != ERROR_IO_PENDING) && (WSAGetLastError() != WSA_IO_PENDING)) {
+			CloseHandle(overlapped.hEvent);
+			error(err, "can't send file");
+		}
+		WaitForSingleObject(overlapped.hEvent, INFINITE);
 	}
+	CloseHandle(overlapped.hEvent);
 	return sentSize;
 }
 #else
