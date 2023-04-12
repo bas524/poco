@@ -1380,7 +1380,7 @@ Poco::Int64 SocketImpl::sendFile(FileInputStream &fileInputStream, Poco::UInt64 
 		int err = WSAGetLastError();
 		if ((err != ERROR_IO_PENDING) && (WSAGetLastError() != WSA_IO_PENDING)) {
 			CloseHandle(overlapped.hEvent);
-			error(err, "can't send file");
+			error(err, Poco::getMessage(err));
 		}
 		WaitForSingleObject(overlapped.hEvent, INFINITE);
 	}
