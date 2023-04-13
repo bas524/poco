@@ -166,6 +166,7 @@ void SocketStreamTest::testSendFile()
 	assertTrue (str.gcount() == fileSize);
 
 	ss.close();
+	fin.close();
 	File f(fileName);
 	f.remove();
 }
