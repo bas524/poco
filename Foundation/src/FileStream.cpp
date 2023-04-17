@@ -57,10 +57,12 @@ FileStreamBuf* FileIOS::rdbuf()
 	return &_buf;
 }
 
+
 FileIOS::NativeHandle FileIOS::nativeHandle() const
 {
 	return _buf.nativeHandle();
 }
+
 
 Poco::UInt64 FileIOS::size() const {
 	return _buf.size();

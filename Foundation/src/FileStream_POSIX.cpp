@@ -168,6 +168,7 @@ std::streampos FileStreamBuf::seekpos(std::streampos pos, std::ios::openmode mod
 	return _pos;
 }
 
+
 FileStreamBuf::NativeHandle FileStreamBuf::nativeHandle() const
 {
 	return _fd;
@@ -176,12 +177,13 @@ FileStreamBuf::NativeHandle FileStreamBuf::nativeHandle() const
 Poco::UInt64 FileStreamBuf::size() const
 {
 	struct stat stat_buf;
-    int rc = fstat(_fd, &stat_buf);
+	int rc = fstat(_fd, &stat_buf);
 	if (rc < 0)
 	{
 		Poco::SystemException(strerror(errno), errno);
 	}
-    return stat_buf.st_size;
+	return stat_buf.st_size;
 }
+
 
 } // namespace Poco

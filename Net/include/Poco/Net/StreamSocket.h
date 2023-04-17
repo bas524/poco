@@ -25,10 +25,15 @@
 
 namespace Poco {
 
+
 class FileInputStream;
+
+
 namespace Net {
 
+
 class StreamSocketImpl;
+
 
 class Net_API StreamSocket: public Socket
 	/// This class provides an interface to a
@@ -254,8 +259,8 @@ public:
 		/// is by enabling the SO_OOBINLINE option.
 
 	Poco::Int64 sendFile(FileInputStream &FileInputStream, Poco::UInt64 offset = 0);
-		/// Sends file with system function
-		/// for posix systems - with sendfile64(...)
+		/// Sends file using system function
+		/// for posix systems - with sendfile[64](...)
 		/// for windows - with TransmitFile(...)
 
 	StreamSocket(SocketImpl* pImpl);
